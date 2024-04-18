@@ -1,0 +1,33 @@
+﻿@page "/append"
+@using Product_DB_Gyak.Model
+@rendermode InteractiveServer
+@inject Product_DB_Gyak.Data.MyDBconetext MyDB
+@inject NavigationManager NavManager
+<h3>Append</h3>
+
+<EditForm Model="@pd" OnValidSubmit="@AppendData">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary class="text-danger"></ValidationSummary>
+        <label class="mt-2" for="name">Név</label>
+        <InputText id="name" class="form-control" @bind-Value="@pd.Name"></InputText>
+        <label class="mt-2" for="desc">Leírás</label>
+        <InputText id="desc" class="form-control" @bind-Value="@pd.Desciption"></InputText>
+        <label class="mt-2" for="price">Ár</label>
+        <InputNumber id="price" class="form-control" @bind-Value="pd.Price"></InputNumber>
+        <label class="mt-2" for="stock">Mennyiség</label>
+        <InputNumber id="stock" class="form-control" @bind-Value="pd.SockQuantity"></InputNumber>
+        <button type="submit" class="btn btn-dark form-control">Hozzáadás</button>
+
+
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    public Product pd { get; set; } = new Product();
+
+    public async Task AppendData()
+    {
+        MyDB.Products.Add(pd);
+        await MyDB.SaveChangesAsync();
+    }
+}

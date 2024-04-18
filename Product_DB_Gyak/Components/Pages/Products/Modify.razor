@@ -1,0 +1,76 @@
+﻿@page "/modify"
+@using Product_DB_Gyak.Model
+@using Microsoft.EntityFrameworkCore
+@inject Product_DB_Gyak.Data.MyDBconetext DB
+@rendermode InteractiveServer
+
+<h3>Modify</h3>
+
+<div>
+    @if(prod is null)
+    {
+        <em>Katt...Katt..</em>
+    }
+    else
+    {
+        <div>
+            <EditForm method="post" Model="prod" OnValidSubmit="UpDate" FormName="Modify" Enhance >
+                <DataAnnotationsValidator/>
+                <ValidationSummary class="text-danger"/>
+                <div class="mb-3">
+                    <label>Név: </label>
+                    <InputText @bind-Value="prod.Name"></InputText>
+                    <ValidationMessage For="()=>prod.Name" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label>Ár: </label>
+                    <InputNumber @bind-Value="prod.Price"></InputNumber>
+                    <ValidationMessage For="()=>prod.Price" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label>Létrehozva: </label>
+                    <InputDate @bind-Value="prod.CreatedAt"></InputDate>
+                    <ValidationMessage For="()=>prod.CreatedAt" class="text-danger"></ValidationMessage>
+                </div>
+                                <div class="mb-3">
+                    <label>Módosítva: </label>
+                    <InputDate @bind-Value="prod.LastModified"></InputDate>
+                    <ValidationMessage For="()=>prod.LastModified" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label>Mennyiség: </label>
+                    <InputNumber @bind-Value="prod.SockQuantity"></InputNumber>
+                    <ValidationMessage For="()=>prod.SockQuantity" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label>Elérhető-e: </label>
+                    <InputCheckbox @bind-Value="prod.IsActive"></InputCheckbox>
+                    <ValidationMessage For="()=>prod.IsActive" class="text-danger"></ValidationMessage>
+                </div>
+                <hr />
+                <button class="btn btn-danger" type="submit">Modosítás!!!</button>
+
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int id { set; get; }
+    [SupplyParameterFromForm]
+    public Product? prod { set; get; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        prod = await DB.Products.FirstOrDefaultAsync(m => m.ProductID == id);
+
+    }
+
+    public async Task UpDate()
+    {
+        DB.Products.Update(prod);
+        await DB.SaveChangesAsync();
+
+    }
+}
