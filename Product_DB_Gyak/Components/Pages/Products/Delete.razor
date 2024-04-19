@@ -7,52 +7,55 @@
 <h3>Delete</h3>
 
 <div>
-    @if (prod is null)
-    {
-        <em>Katt...Katt..</em>
-    }
-    else
-    {
-        <div>
-            <EditForm method="post" Model="prod" OnValidSubmit="DeleteProd" FormName="Modify" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary class="text-danger" />
-                <div class="mb-3">
-                    <label>Név: </label>
-                    <InputText @bind-Value="prod.Name"></InputText>
-                    <ValidationMessage For="()=>prod.Name" class="text-danger"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <label>Ár: </label>
-                    <InputNumber @bind-Value="prod.Price"></InputNumber>
-                    <ValidationMessage For="()=>prod.Price" class="text-danger"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <label>Létrehozva: </label>
-                    <InputDate @bind-Value="prod.CreatedAt"></InputDate>
-                    <ValidationMessage For="()=>prod.CreatedAt" class="text-danger"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <label>Módosítva: </label>
-                    <InputDate @bind-Value="prod.LastModified"></InputDate>
-                    <ValidationMessage For="()=>prod.LastModified" class="text-danger"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <label>Mennyiség: </label>
-                    <InputNumber @bind-Value="prod.SockQuantity"></InputNumber>
-                    <ValidationMessage For="()=>prod.SockQuantity" class="text-danger"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <label>Elérhető-e: </label>
-                    <InputCheckbox @bind-Value="prod.IsActive"></InputCheckbox>
-                    <ValidationMessage For="()=>prod.IsActive" class="text-danger"></ValidationMessage>
-                </div>
-                <hr />
-                <button class="btn btn-danger" type="submit">Törlés!!!</button>
 
-            </EditForm>
-        </div>
-    }
+
+            @if (prod is null)
+            {
+                <em>Katt...Katt..</em>
+            }
+            else if(prod.ShowData == true)
+            {
+                <div>
+                    <EditForm method="post" Model="prod" OnValidSubmit="DeleteProd" FormName="Modify" Enhance>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+                        <div class="mb-3">
+                            <label>Név: </label>
+                            <InputText @bind-Value="prod.Name"></InputText>
+                            <ValidationMessage For="()=>prod.Name" class="text-danger"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <label>Ár: </label>
+                            <InputNumber @bind-Value="prod.Price"></InputNumber>
+                            <ValidationMessage For="()=>prod.Price" class="text-danger"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <label>Létrehozva: </label>
+                            <InputDate @bind-Value="prod.CreatedAt"></InputDate>
+                            <ValidationMessage For="()=>prod.CreatedAt" class="text-danger"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <label>Módosítva: </label>
+                            <InputDate @bind-Value="prod.LastModified"></InputDate>
+                            <ValidationMessage For="()=>prod.LastModified" class="text-danger"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <label>Mennyiség: </label>
+                            <InputNumber @bind-Value="prod.SockQuantity"></InputNumber>
+                            <ValidationMessage For="()=>prod.SockQuantity" class="text-danger"></ValidationMessage>
+                        </div>
+                        <div class="mb-3">
+                            <label>Elérhető-e: </label>
+                            <InputCheckbox @bind-Value="prod.IsActive"></InputCheckbox>
+                            <ValidationMessage For="()=>prod.IsActive" class="text-danger"></ValidationMessage>
+                        </div>
+                        <hr />
+                        <button class="btn btn-danger" type="submit">Törlés!!!</button>
+
+                    </EditForm>
+                </div>
+            }
+
 </div>
 
 @code {
@@ -69,7 +72,8 @@
 
     public async Task DeleteProd()
     {
-        DB.Products.Remove(prod);
+        prod.ShowData = false;
+        DB.Products.Update(prod);
         await DB.SaveChangesAsync();
 
     }

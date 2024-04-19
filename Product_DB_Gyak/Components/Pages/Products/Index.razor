@@ -8,7 +8,7 @@
 <h3>Index</h3>
 <hr />
 
-<QuickGrid Items="@DB.Products">
+<QuickGrid Items="@DB.Products.Where(i=>i.ShowData == true)">
     <PropertyColumn Title="ID: " Property="i=>i.ProductID"></PropertyColumn>
     <PropertyColumn Title="Név: " Property="i=>i.Name"></PropertyColumn>
     <PropertyColumn Title="Ár: " Property="i=>i.Price"></PropertyColumn>
@@ -33,11 +33,26 @@
     <InputNumber id="prodQ" @bind-Value="pq"></InputNumber>
     <button type="button" class="btn btn-primary" onclick="@IsAvailable">Rendelés</button>
 </div>
-@if (available.HasValue)
+@if (van)
 {
     <p>@msg</p>
 }
-
+else
+{
+    <p>@msg</p>
+}
+<hr />
+@{
+    int count = 0;
+    foreach (var product in DB.Products)
+    {
+        if (product.ShowData)
+        {
+            count++;
+        }
+    }
+}
+<p>Az adatbázisban @count adat található!</p>
 
 
 
@@ -46,6 +61,8 @@
     public int pq;
     public bool? available;
     public string msg;
+    public bool van;
+    public int count;
 
     public async Task IsAvailable()
     {
@@ -55,11 +72,13 @@
             if (product.SockQuantity >= pq)
             {
                 available = true;
+                van = true;
                 msg = "A termék rendelhető!";
             }
             else
             {
                 available = false;
+                van = false;
                 msg = "Nincs elegendő a készleten!";
             }
         }
@@ -67,6 +86,7 @@
         {
 
             available = null;
+            van = false;
             msg = "A megadott azonosítóval nincs termék!";
         }
     }
